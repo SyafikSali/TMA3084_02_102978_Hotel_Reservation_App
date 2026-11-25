@@ -1,0 +1,70 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run static analysis
+        run: flutter analyze
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Verify test coverage is at least 60%
+        shell: pwsh
+        run: |
+          $lcovPath = "coverage/lcov.info"
+          if (-not (Test-Path $lcovPath)) {
+            Write-Error "Coverage report not found at $lcovPath"
+            exit 1
+          }
+
+          $linesFound = 0
+          $linesHit = 0
+
+          foreach ($line in Get-Content $lcovPath) {
+            if ($line -match "^LF:(\d+)$") {
+              $linesFound += [int]$matches[1]
+            } elseif ($line -match "^LH:(\d+)$") {
+              $linesHit += [int]$matches[1]
+            }
+          }
+
+          if ($linesFound -eq 0) {
+            Write-Error "No executable lines found in coverage report."
+            exit 1
+          }
+
+          $coveragePct = [math]::Round(($linesHit / $linesFound) * 100, 2)
+          Write-Host "Total test coverage: $coveragePct% ($linesHit/$linesFound lines)"
+
+          if ($coveragePct -lt 60) {
+            Write-Error "Coverage ($coveragePct%) is below the required 60% threshold."
+            exit 1
+          }
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: error
