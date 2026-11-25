@@ -30,37 +30,31 @@ jobs:
         run: flutter test --coverage
 
       - name: Verify test coverage is at least 60%
-        shell: pwsh
         run: |
-          $lcovPath = "coverage/lcov.info"
-          if (-not (Test-Path $lcovPath)) {
-            Write-Error "Coverage report not found at $lcovPath"
+          LCOV_PATH="coverage/lcov.info"
+          if [ ! -f "$LCOV_PATH" ]; then
+            echo "Coverage report not found at $LCOV_PATH"
             exit 1
-          }
+          fi
 
-          $linesFound = 0
-          $linesHit = 0
+          LF=$(awk -F: '/^LF:/ {sum += $2} END {print sum+0}' "$LCOV_PATH")
+          LH=$(awk -F: '/^LH:/ {sum += $2} END {print sum+0}' "$LCOV_PATH")
 
-          foreach ($line in Get-Content $lcovPath) {
-            if ($line -match "^LF:(\d+)$") {
-              $linesFound += [int]$matches[1]
-            } elseif ($line -match "^LH:(\d+)$") {
-              $linesHit += [int]$matches[1]
+          if [ "$LF" -eq 0 ]; then
+            echo "No executable lines found in coverage report."
+            exit 1
+          fi
+
+          PCT=$(awk -v hit="$LH" -v total="$LF" 'BEGIN {printf "%.2f", (hit / total) * 100}')
+          echo "Total test coverage: ${PCT}% (${LH}/${LF} lines)"
+
+          awk -v hit="$LH" -v total="$LF" 'BEGIN {
+            pct = (hit / total) * 100;
+            if (pct < 60) {
+              printf "Coverage (%.2f%%) is below the required 60%% threshold.\n", pct;
+              exit 1;
             }
-          }
-
-          if ($linesFound -eq 0) {
-            Write-Error "No executable lines found in coverage report."
-            exit 1
-          }
-
-          $coveragePct = [math]::Round(($linesHit / $linesFound) * 100, 2)
-          Write-Host "Total test coverage: $coveragePct% ($linesHit/$linesFound lines)"
-
-          if ($coveragePct -lt 60) {
-            Write-Error "Coverage ($coveragePct%) is below the required 60% threshold."
-            exit 1
-          }
+          }'
 
       - name: Upload coverage report artifact
         uses: actions/upload-artifact@v4
