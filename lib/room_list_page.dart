@@ -29,6 +29,42 @@ class _RoomListPageState extends State<RoomListPage> {
     _rooms = buildRooms(widget.preferred);
   }
 
+  Widget _buildRoomPhoto(RoomType room, ColorScheme colorScheme) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Image.asset(
+        room.assetPath,
+        height: 160,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            height: 160,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(room.icon, size: 36, color: colorScheme.primary),
+                const SizedBox(height: 6),
+                Text(
+                  room.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -47,10 +83,11 @@ class _RoomListPageState extends State<RoomListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Stay Summary',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      'PARK HYATT SEOUL · STAY SUMMARY',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: colorScheme.tertiary,
                         fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
+                        letterSpacing: 1.0,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -58,28 +95,24 @@ class _RoomListPageState extends State<RoomListPage> {
                     const SizedBox(height: 4),
                     Text('${widget.guests} guests'),
                     const SizedBox(height: 10),
-                    AnimatedOpacity(
-                      opacity: 1.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: widget.breakfast
-                              ? colorScheme.secondaryContainer
-                              : colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          widget.breakfast
-                              ? 'Breakfast included'
-                              : 'Room only (no breakfast)',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: widget.breakfast
+                            ? colorScheme.secondaryContainer
+                            : colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        widget.breakfast
+                            ? 'Breakfast included'
+                            : 'Room only (no breakfast)',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -101,21 +134,36 @@ class _RoomListPageState extends State<RoomListPage> {
                     return ListTile(
                       leading: Icon(room.icon, color: colorScheme.primary),
                       title: Text(room.name),
-                      subtitle: isPreferred
-                          ? Text(
-                              'Preferred option',
-                              style: TextStyle(color: colorScheme.secondary),
-                            )
-                          : null,
+                      subtitle: Text(
+                        isPreferred
+                            ? '${room.rateLabel} · Preferred'
+                            : room.rateLabel,
+                        style: TextStyle(
+                          color: isPreferred
+                              ? colorScheme.tertiary
+                              : colorScheme.onSurfaceVariant,
+                          fontWeight: isPreferred
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
                     );
                   },
                   body: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
+                    duration: const Duration(milliseconds: 260),
                     curve: Curves.easeInOut,
                     color: isPreferred
-                        ? colorScheme.primaryContainer.withValues(alpha: 0.25)
+                        ? colorScheme.secondaryContainer.withValues(alpha: 0.35)
                         : Colors.transparent,
-                    child: ListTile(title: Text(room.description)),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildRoomPhoto(room, colorScheme),
+                        const SizedBox(height: 12),
+                        Text(room.description),
+                      ],
+                    ),
                   ),
                 );
               }).toList(),

@@ -95,6 +95,64 @@ class _BookingFormPageState extends State<BookingFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [colorScheme.primary, const Color(0xFF23282E)],
+                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: colorScheme.secondary.withValues(alpha: 0.65),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: colorScheme.secondary.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.spa_outlined,
+                        color: colorScheme.secondary,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'PARK HYATT SEOUL',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: colorScheme.secondary,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.4,
+                                ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Teheran-ro, Gangnam-gu · Modern Luxury',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: colorScheme.onPrimary.withValues(
+                                    alpha: 0.85,
+                                  ),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -102,12 +160,12 @@ class _BookingFormPageState extends State<BookingFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Guest Details',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.primary,
-                            ),
+                        'GUEST RESERVATION',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: colorScheme.tertiary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
@@ -166,12 +224,12 @@ class _BookingFormPageState extends State<BookingFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Stay Preferences',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.primary,
-                            ),
+                        'ACCOMMODATION PREFERENCES',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: colorScheme.tertiary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -188,7 +246,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              '${_guests.round()} pax',
+                              '${_guests.round()} guests',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -232,12 +290,12 @@ class _BookingFormPageState extends State<BookingFormPage> {
                       ),
                       const SizedBox(height: 12),
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
+                        duration: const Duration(milliseconds: 260),
                         curve: Curves.easeInOut,
                         decoration: BoxDecoration(
                           color: _breakfast
-                              ? colorScheme.primaryContainer.withValues(
-                                  alpha: 0.45,
+                              ? colorScheme.secondaryContainer.withValues(
+                                  alpha: 0.65,
                                 )
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
@@ -296,7 +354,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
               ),
               const SizedBox(height: 16),
               SizedBox(
-                height: 48,
+                height: 50,
                 child: FilledButton(
                   onPressed: _submit,
                   child: const Text('Reserve'),

@@ -8,6 +8,8 @@ class RoomType {
     required this.name,
     required this.icon,
     required this.description,
+    required this.assetPath,
+    required this.rateLabel,
     this.isExpanded = false,
   });
 
@@ -15,6 +17,8 @@ class RoomType {
   final String name;
   final IconData icon;
   final String description;
+  final String assetPath;
+  final String rateLabel;
   bool isExpanded;
 }
 
@@ -24,22 +28,27 @@ List<RoomType> buildRooms(RoomPreference preferred) {
       preference: RoomPreference.single,
       name: 'Single Room',
       icon: Icons.single_bed,
-      description:
-          'One guest, one single bed, courtyard view. RM 120 per night.',
+      description: 'One guest, serene Gangnam city view, oak-accented sanctuary. RM 120 per night.',
+      assetPath: 'assets/images/single.jpg',
+      rateLabel: 'RM 120 / night',
       isExpanded: preferred == RoomPreference.single,
     ),
     RoomType(
       preference: RoomPreference.double,
       name: 'Double Room',
       icon: Icons.bed,
-      description: 'Two guests, one double bed, city view. RM 180 per night.',
+      description: 'Two guests, floor-to-ceiling skyline glass, spa bath & lounge. RM 180 per night.',
+      assetPath: 'assets/images/double.jpg',
+      rateLabel: 'RM 180 / night',
       isExpanded: preferred == RoomPreference.double,
     ),
     RoomType(
       preference: RoomPreference.family,
       name: 'Family Room',
       icon: Icons.family_restroom,
-      description: 'Four guests, two beds, living area. RM 260 per night.',
+      description: 'Four guests, expansive suite layout, dining salon & panoramic view. RM 260 per night.',
+      assetPath: 'assets/images/family.jpg',
+      rateLabel: 'RM 260 / night',
       isExpanded: preferred == RoomPreference.family,
     ),
   ];
